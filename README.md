@@ -10,7 +10,7 @@ Go to command prompt
 
 $python twitter_streaming.py "one arguments"
 
->>>twitter_streaming "one arguments"
+>>>twitter_streaming.py "one arguments"
 
 or
 
