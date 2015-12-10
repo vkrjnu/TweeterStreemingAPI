@@ -22,7 +22,7 @@ class StdOutListner(StreamListener):
 	    self.tweets_data.append(tweet)
 	    current_time = time.localtime(time.time())
 	    time_diff = (time.mktime(current_time) - time.mktime(self.start_time)) / 60
-	    if time_diff > 0:
+	    if math.floor(time_diff) == 1:
 	        tweets_data_list.append(tuple(self.tweets_data))
 	        if self.count == 5:
 	            self.last_five = 1
@@ -69,7 +69,7 @@ class StdOutListner(StreamListener):
 
 	def on_error(self, status):
 	    print("Error occured" + status)
-	    
+
 if __name__ == "__main__":
 	try:
 		stdl = StdOutListner()
