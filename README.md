@@ -1,7 +1,6 @@
-Install Python 3 on your system & Install pip 
-install NLTK and tweepy using pip 
+Install Python 3 on your system & Install pip & install NLTK and tweepy using pip 
 
-pip install tweepy
+pip install tweepy & 
 pip install nltk
 
 obtain Oauth an access token for Twitter Streaming API.
