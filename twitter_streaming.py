@@ -4,7 +4,6 @@ from tweepy import Stream
 import json, time, math, sys, os, re
 from nltk import pos_tag, word_tokenize
 from urllib.request import urlopen
-import urllib
 
 access_token = "388139836-nottn5MwhKBlf6cERn5R7PcRjVFfrzezGJW7h79f"
 access_token_secret = "7aPwrTvgHOyhuCxZy1HNR7LgiBjdBqtHsae1mms00eTBi"
@@ -67,8 +66,10 @@ class StdOutListner(StreamListener):
 	        self.tweets_user.clear()
 	        del(self.tweets_data[:])
 	    return True
+
 	def on_error(self, status):
 	    print("Error occured" + status)
+	    
 if __name__ == "__main__":
 	try:
 		stdl = StdOutListner()
