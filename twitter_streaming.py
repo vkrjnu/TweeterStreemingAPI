@@ -62,8 +62,8 @@ class StdOutListner(StreamListener):
 	        number_of_link = len(link_set)
 	        print("****Total number of links in all tweets***")
 	        print(number_of_link)
-	        text_token = word_tokenize(tweet_text)
-	        print(pos_tag(text_token))
+	        #text_token = word_tokenize(tweet_text)
+	        #print(pos_tag(text_token))
 	        self.tweets_user.clear()
 	        del(self.tweets_data[:])
 	    return True
