@@ -24,7 +24,7 @@ class StdOutListner(StreamListener):
 	    self.tweets_data.append(tweet)
 	    current_time = time.localtime(time.time())
 	    time_diff = (time.mktime(current_time) - time.mktime(self.start_time)) / 60
-	    if time_diff > 0:
+	    if math.floor(time_diff) == 1:
 	        tweets_data_list.append(tuple(self.tweets_data))
 	        if self.count == 5:
 	            self.last_five = 1
@@ -63,7 +63,7 @@ class StdOutListner(StreamListener):
 	        number_of_link = len(link_set)
 	        tweet_text = re.sub(r"(https?://[^\s]+)|([^A-Za-z0-9]+)",' ',tweet_text)
 	        #maximum noun and verb words included
-	        print("\n****Total number of shared links of tweets***")
+	        print("\n****Total number of shared links in tweets***")
 	        print(number_of_link)
 	        text_token = word_tokenize(tweet_text)
 	        pos_tag_list = pos_tag(text_token)
@@ -75,7 +75,7 @@ class StdOutListner(StreamListener):
 	        		 	self.tag_words[tag_list[0]] = 1
 	        sorted_tag = sorted(self.tag_words.items(), key=operator.itemgetter(1),reverse = True)
 	        c = 0
-	        print('\n*****top ten used words of tweets*****')
+	        print('\n*****top ten used words in tweets*****')
 	        for tag_list in sorted_tag:
 	        	c += 1
 	        	if len(tag_list[0]) > 1:
