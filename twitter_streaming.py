@@ -4,6 +4,7 @@ from tweepy import Stream
 import json, time, math, sys, os, re
 from nltk import pos_tag, word_tokenize
 from urllib.request import urlopen
+import operator
 
 access_token = "388139836-nottn5MwhKBlf6cERn5R7PcRjVFfrzezGJW7h79f"
 access_token_secret = "7aPwrTvgHOyhuCxZy1HNR7LgiBjdBqtHsae1mms00eTBi"
@@ -17,6 +18,8 @@ class StdOutListner(StreamListener):
 	    self.last_five = 0
 	    self.tweets_data = []
 	    self.tweets_user = {}
+	    self.tag_type_list = ['DT','CC','CD','IN','JJ','JJR','JJS','PRP','PRP$','SYM','WP','WP$','WRB','WDT','UH','TO','PDT','POS']
+	    self.tag_words = {}
 	def on_data(self, data):
 	    tweet = json.loads(data)
 	    self.tweets_data.append(tweet)
@@ -54,16 +57,33 @@ class StdOutListner(StreamListener):
 	        		#print(el.url)
 	        	#print(link_set)
 	        self.start_time = time.localtime(time.time())
-	        print("****Twitter's User with total number of tweets****")
+	        print("\n****Twitter's User with total number of tweets****")
 	        for tu, tn in self.tweets_user.items():
 	        	print(tu+" : "+ str(tn))
 	        link_set = set(re.findall(r"https?://[^\s]+", tweet_text))
 	        number_of_link = len(link_set)
-	        print("****Total number of links in all tweets***")
+	        tweet_text = re.sub(r"(https?://[^\s]+)|([^A-Za-z0-9]+)",' ',tweet_text)
+	        #tweet_text = ''.join(e for e in tweet_text if e.isalnum or e.isspace)
+	        print("\n****Total number of shared links of tweets***")
 	        print(number_of_link)
-	        #text_token = word_tokenize(tweet_text)
-	        #print(pos_tag(text_token))
+	        text_token = word_tokenize(tweet_text)
+	        pos_tag_list = pos_tag(text_token)
+	        for tag_list in pos_tag_list:
+	        	if tag_list[1] not in self.tag_type_list:
+	        		if tag_list[0] in self.tag_words:
+	        			self.tag_words[tag_list[0]] += 1
+	        		else:
+	        		 	self.tag_words[tag_list[0]] = 1
+	        sorted_tag = sorted(self.tag_words.items(), key=operator.itemgetter(1),reverse = True)
+	        c = 0
+	        print('\n*****top ten used tag_words of tweets*****')
+	        for tag_list in sorted_tag:
+	        	c += 1
+	        	print(tag_list[0]+" : "+ str(tag_list[1]))
+	        	if c == 10:
+	        		break;
 	        self.tweets_user.clear()
+	        self.tag_words.clear()
 	        del(self.tweets_data[:])
 	    return True
 
