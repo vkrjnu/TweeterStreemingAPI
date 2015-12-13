@@ -1,10 +1,9 @@
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-import json, time, math, sys, os, re
+import json, time, math, sys, os, re, operator
 from nltk import pos_tag, word_tokenize
 from urllib.request import urlopen
-import operator
 
 access_token = "388139836-nottn5MwhKBlf6cERn5R7PcRjVFfrzezGJW7h79f"
 access_token_secret = "7aPwrTvgHOyhuCxZy1HNR7LgiBjdBqtHsae1mms00eTBi"
@@ -18,14 +17,14 @@ class StdOutListner(StreamListener):
 	    self.last_five = 0
 	    self.tweets_data = []
 	    self.tweets_user = {}
-	    self.tag_type_list = ['DT','CC','CD','IN','JJ','JJR','JJS','PRP','PRP$','SYM','WP','WP$','WRB','WDT','UH','TO','PDT','POS']
+	    self.tag_type_list = ['DT','CC','CD','IN','JJ','JJR','JJS','PRP','PRP$','SYM','WP','WP$','WRB','WDT','UH','TO','PDT','POS','VBZ']
 	    self.tag_words = {}
 	def on_data(self, data):
 	    tweet = json.loads(data)
 	    self.tweets_data.append(tweet)
 	    current_time = time.localtime(time.time())
 	    time_diff = (time.mktime(current_time) - time.mktime(self.start_time)) / 60
-	    if math.floor(time_diff) == 1:
+	    if time_diff > 0:
 	        tweets_data_list.append(tuple(self.tweets_data))
 	        if self.count == 5:
 	            self.last_five = 1
@@ -63,7 +62,7 @@ class StdOutListner(StreamListener):
 	        link_set = set(re.findall(r"https?://[^\s]+", tweet_text))
 	        number_of_link = len(link_set)
 	        tweet_text = re.sub(r"(https?://[^\s]+)|([^A-Za-z0-9]+)",' ',tweet_text)
-	        #tweet_text = ''.join(e for e in tweet_text if e.isalnum or e.isspace)
+	        #maximum noun and verb words included
 	        print("\n****Total number of shared links of tweets***")
 	        print(number_of_link)
 	        text_token = word_tokenize(tweet_text)
@@ -76,10 +75,11 @@ class StdOutListner(StreamListener):
 	        		 	self.tag_words[tag_list[0]] = 1
 	        sorted_tag = sorted(self.tag_words.items(), key=operator.itemgetter(1),reverse = True)
 	        c = 0
-	        print('\n*****top ten used tag_words of tweets*****')
+	        print('\n*****top ten used words of tweets*****')
 	        for tag_list in sorted_tag:
 	        	c += 1
-	        	print(tag_list[0]+" : "+ str(tag_list[1]))
+	        	if len(tag_list[0]) > 1:
+	        		print(tag_list[0]+" : "+ str(tag_list[1]))
 	        	if c == 10:
 	        		break;
 	        self.tweets_user.clear()
@@ -88,7 +88,7 @@ class StdOutListner(StreamListener):
 	    return True
 
 	def on_error(self, status):
-	    print("Error occured" + status)
+	    print("Error occured" + str(status))
 
 if __name__ == "__main__":
 	try:
